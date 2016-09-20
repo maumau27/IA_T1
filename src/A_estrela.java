@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-public class A_estrela {
+public class A_estrela{
 	private class Corrente_Celula{
 		public Celula celula_atual;
 		public float custo_acumulado;//custo do caminho da cedula inicial ate a atual
@@ -23,8 +23,24 @@ public class A_estrela {
 			this.custo_acumulado = 0;
 			this.custo_total = this.custo_acumulado + Heuristica(this.celula_atual);
 		}
-	}
-	
+		
+		public Corrente_Celula ObterPai(){
+			return this.celula_pai;
+		}
+		
+		public Celula ObterCelula(){
+			return this.celula_atual;
+		}
+		
+		public float ObterCustoAcumulado(){
+			return this.custo_acumulado;
+		}
+		
+		public float ObterCustoTotal(){
+			return this.custo_total;
+		}
+	} 
+		
 	private int clareiras_esperadas;
 	private int clareiras_passadas;
 	private Celula ponto_inicial;
@@ -45,16 +61,61 @@ public class A_estrela {
 		this.celulas_planejadas.add(new Corrente_Celula(ponto_inicial));
 	}
 	
-	public void Iterar(){
+	private void Iterar(){
+		this.celula_atual = this.celulas_planejadas.get(0);
+		this.celulas_planejadas.remove(this.celula_atual);
+		this.caminho.add(this.celula_atual);
 		
-		ArrayList<Celula> celulas_vizinhas = this.floresta.ObterVizinhos(ponto_inicial);
+		if(this.celula_atual.ObterCelula().custo == -1)
+			this.clareiras_passadas++;
+
+		ArrayList<Celula> celulas_vizinhas = this.floresta.ObterVizinhos(this.celula_atual.ObterCelula());
 		
 		for (Celula celula : celulas_vizinhas) {
 			this.celulas_planejadas.add(new Corrente_Celula(celula, this.celula_atual));
 		}
+		
+		//sort celulas_planejadas
 	}
 	
-	private float Heuristica(Celula casa_inicial) {
+	private void DesIterar(){
+		ArrayList<Celula> celulas_vizinhas = this.floresta.ObterVizinhos(this.celula_atual.ObterCelula());
+		
+		for (Corrente_Celula elemento : this.celulas_planejadas) {
+			if(celulas_vizinhas.contains(elemento.ObterCelula()) && elemento.ObterPai() == this.celula_atual){
+				this.celulas_planejadas.remove(elemento);
+			}
+		}
+		
+		this.celulas_planejadas.add(this.celula_atual);
+		this.caminho.remove(this.celula_atual);
+		
+		this.celula_atual = this.celula_atual.ObterPai();
+		
+		//sort celulas_planejadas
+	}
+	
+	public void DarUmPasso(){
+		this.Iterar();
+	}
+	
+	public void VoltarUmPasso(){
+		this.DesIterar();
+	}
+	
+	public Corrente_Celula ObterCelulaAtual(){
+		return this.celula_atual;
+	}
+	
+	public ArrayList<Corrente_Celula> ObterCaminho(){
+		return this.caminho;
+	}
+	
+	public ArrayList<Corrente_Celula> ObterCaminhoPlanejado(){
+		return this.celulas_planejadas;
+	}
+	
+	public float Heuristica(Celula casa_inicial) {
 		return (casa_inicial.x - this.ponto_final.x) + (casa_inicial.y - this.ponto_final.y);
 	}
 }
