@@ -64,4 +64,25 @@ Retorna quantas clareiras existem no mapa
 **Celula ObterCelula( int x , int y )**
 Checa se uma celula ou coordenada pertence ao mapa
 
+## Classe: Encontros
+Carrega o arquivo de cestas e encontros, calcula a melhor distribuição para uma quantidade definida de encontros.
 
+### Construtor:
+**public Encontros()**
+Usa o arquivo "encontros.txt" e "cesta.txt" na raiz do projeto como base
+
+
+### Metodos:
+**void CalcularEncontros( int qtd )**
+Calcula a melhor distribuição de doces para uma quantidade especifica de encontros.
+Nao retorna nada, para obter o custo de um encontro, use o metodo **ObterCustoEncontro**
+
+**double ObterCustoEncontro( int numeroDoEncontro )**
+Retorna o custo de um encontro especifico.
+
+**void ImprimirEncontros()**
+Imprime como ficou a distribuição de doces por encontro, os doces são exibidos por um ID ( ordem de leitura no arquivo ).
+
+
+
+**
