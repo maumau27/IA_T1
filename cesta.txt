@@ -1,5 +1,5 @@
-5;1.5;Doce 1
-5;1.4;Doce 2
-5;1.3;Doce 3
-5;1.2;Doce 4
-5;1.1;Doce 5
+5;1.5;Torta de Amoras
+5;1.4;Cupcakes de Marshmallow
+5;1.3;Bolo de Chocolate
+5;1.2;Brigadeiro
+5;1.1;Doce de Coco
