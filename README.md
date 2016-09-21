@@ -8,7 +8,6 @@ Atua como uma estrutura de dados.
 
 ### Construtor:
 **Celula( int x , int y , int terreno , float custo )**
-
 ### Variaveis Publicas:
 int x = posicao X no mapa
 int y = posicao Y no mapa
