@@ -1,9 +1,19 @@
+import java.util.ArrayList;
 
 public class jogo {
 
 	public static void main(String[] args) {
+		System.out.println( "DEBUG: START" );
+		
 		// TODO Auto-generated method stub
 		Mapa map = new Mapa();
-		Cesta ces = new Cesta();
+		Encontros enc = new Encontros();
+		
+		enc.DefinirEncontros(10);
+		
+		System.out.println( "Custo do Encontro 1: " + enc.ObterCustoEncontro(0) +"\n\n" );
+		
+		enc.ImprimirEncontros();
+	
 	}
 }

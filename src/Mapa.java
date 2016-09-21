@@ -8,6 +8,7 @@ public class Mapa {
 	private Celula inicio = null;
 	private Celula fim = null;
 	private int[] dimensoes = new int[2];
+	private int clareiras;
 	
 	
 	public Mapa(String arquivo) {
@@ -59,6 +60,7 @@ public class Mapa {
 	        		celulas.get(y).add( new Celula(x,y,3,200) );
 	        	} else if ( chr == 'C') {
 	        		celulas.get(y).add( new Celula(x,y,4,-1) );
+	        		this.clareiras++;
 	        	} else if ( chr == 'I') {
 	        		celulas.get(y).add( new Celula(x,y,5,0) );
 	        		inicio = new Celula(x,y,5,0);
@@ -126,7 +128,11 @@ public class Mapa {
 	}	
 	
 	public int[] ObterTamanho() {
-		return dimensoes;
+		return this.dimensoes;
+	}
+	
+	public int ObterQuantidadeClareiras() {
+		return this.clareiras;
 	}
 	
 	public ArrayList<Celula> ObterVizinhos( Celula cel ) {
@@ -155,5 +161,4 @@ public class Mapa {
 		
 		return vizinhos;
 	}
-	
 }

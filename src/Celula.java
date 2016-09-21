@@ -1,4 +1,5 @@
-public class Celula  {
+
+public class Celula {
 	public int terreno;
 	public float custo;
 	public int x;
