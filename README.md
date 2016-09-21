@@ -54,5 +54,14 @@ Retona um vetor onde
 [0] = tamanho X do mapa ( em celulas )
 [1] = tamanho Y do mapa ( em celulas )
 
+**ArrayList<Celula> ObterVizinhos( Celula cel )**
+Retorna uma lista de celulas vizinhas a celula CEL
+
+**int ObterQuantidadeClareiras()**
+Retorna quantas clareiras existem no mapa
+
+**boolean PertenceAoMapa( Celula cel )**
+**Celula ObterCelula( int x , int y )**
+Checa se uma celula ou coordenada pertence ao mapa
 
 
