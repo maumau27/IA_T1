@@ -195,11 +195,11 @@ public class Encontros {
 	    file.close();
 	}
 	
-	public void DefinirEncontros( int qtd ) {
-		this.DefinirEncontros( qtd , 1 );
+	public void CalcularEncontros( int qtd ) {
+		this.CalcularEncontros( qtd , 1 );
 	}
 	
-	public void DefinirEncontros( int qtd , int algoritmo ) {
+	public void CalcularEncontros( int qtd , int algoritmo ) {
 		switch( algoritmo ) {
 			case 1:
 				this.AlgoritmoGuloso( qtd );
@@ -304,7 +304,7 @@ public class Encontros {
 	}
 	
 	public double ObterCustoEncontro( int numeroDoEncontro ) {
-		return this.encontros.get( numeroDoEncontro ).calcularCustoEncontro(null);
+		return this.encontros.get( numeroDoEncontro - 1 ).calcularCustoEncontro(null);
 	}
 	
 	public void ImprimirEncontros() {

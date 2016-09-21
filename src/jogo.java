@@ -9,9 +9,9 @@ public class jogo {
 		Mapa map = new Mapa();
 		Encontros enc = new Encontros();
 		
-		enc.DefinirEncontros(10);
+		enc.CalcularEncontros(10);
 		
-		System.out.println( "Custo do Encontro 1: " + enc.ObterCustoEncontro(0) +"\n\n" );
+		System.out.println( "Custo do Encontro 1: " + enc.ObterCustoEncontro(1) +"\n\n" );
 		
 		enc.ImprimirEncontros();
 	
