@@ -303,6 +303,15 @@ public class Encontros {
 		}
 	}
 	
+	private void AlgoritmoForcaBruta1(int qtd) {
+		// Lucas, desenvolve o teu força bruta no AlgoritmoForcaBruta2
+		// Esse meu desenvolvimento será experimental
+	}
+	
+	private void AlgoritmoForcaBruta2(int qtd) {
+		// Algoritmo de força bruta do Lucas
+	}
+	
 	public double ObterCustoEncontro( int numeroDoEncontro ) {
 		return this.encontros.get( numeroDoEncontro - 1 ).calcularCustoEncontro(null);
 	}
