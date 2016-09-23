@@ -204,6 +204,11 @@ public class Encontros {
 			case 1:
 				this.AlgoritmoGuloso( qtd );
 				break;
+			
+			case 2:
+				this.AlgoritmoForcaBruta1( qtd );
+				break;
+			
 			default:
 				break;
 		}
@@ -306,6 +311,58 @@ public class Encontros {
 	private void AlgoritmoForcaBruta1(int qtd) {
 		// Lucas, desenvolve o teu força bruta no AlgoritmoForcaBruta2
 		// Esse meu desenvolvimento será experimental
+		
+		// Prepara lista de doces disponiveis
+		ArrayList<Doce> docesDisponiveis = new ArrayList<Doce>();
+		for( PunhadoDeDoce punDoces : this.cesta.inventarioOriginal ) {
+			int j;
+			for( j = 0 ; j < punDoces.quantidade ; j++) {
+				docesDisponiveis.add( punDoces );
+			}
+		}
+		
+		// Separa o doce da vovo
+		this.doceDaVovo = Cesta.piorDoce( docesDisponiveis );
+		docesDisponiveis.remove(doceDaVovo);
+		
+		// Combinação A: Possiveis doces que um encontro pode ter
+		// Estado: FINALIZADO e CHECADO
+		ArrayList<ArrayList<Doce>> combDocesPorEncontro = new ArrayList<ArrayList<Doce>>();
+		AlgoritmoForcaBruta1_Aux1( combDocesPorEncontro , this.cesta.inventarioOriginal , new ArrayList<Doce>() , 0 );
+		
+		// Combinação B: Define como as combinações A podem ficar distribuidas em todos os encontros
+		// Neste momento, a ordem do encontro ainda não faz diferença
+		// Estado: EM ANDAMENTO
+		
+		// Combinação C: Define como as combinações B podem ficar distribuidas considerando a ordem dos encontros
+		// Estado: EM ANDAMENTO
+		
+		/*
+		// DEBUG: Imprimir essa bosta
+		for( ArrayList<Doce> ListaDoce : combDocesPorEncontro ) {
+			System.out.print("\n");
+			for( Doce doc : ListaDoce ) {
+				System.out.print( doc.tipo + " | " );
+			}
+		}
+		System.out.print("\n");
+		*/
+		
+	}
+	
+	private void AlgoritmoForcaBruta1_Aux1( ArrayList<ArrayList<Doce>> listaDoces , ArrayList<PunhadoDeDoce> inventario ,  ArrayList<Doce> ultimaLista , int pos ) {
+		if( pos >= inventario.size() ) {
+			return;
+		}
+		
+		for( int i = pos ; i < inventario.size() ; i ++ ) {
+			ArrayList<Doce> novaLista = new ArrayList<Doce>(ultimaLista);
+			novaLista.add( inventario.get(i) );
+			listaDoces.add( novaLista );
+			
+			this.AlgoritmoForcaBruta1_Aux1( listaDoces , inventario , novaLista , (i+1) );
+		}
+		
 	}
 	
 	private void AlgoritmoForcaBruta2(int qtd) {
