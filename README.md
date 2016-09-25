@@ -123,7 +123,36 @@ Retorna *true* caso a corrente de celula seja uma folha, *false* caso contrario.
 **ObterCustoAcumulado()**
 Retorna o custo do inicio até a celula da corrente de celula atual.
 
+## Classe: Tela
+Frame da que roda a interface grafica.
 
+### Construtor:
+**Tela()**
+
+## Classe: InterfaceGrafica
+Painel da interface grafica do programa (singleton).
+
+### Construtor (privado):
+**InterfaceGrafica()**
+
+### Metodos:
+**static InterfaceGrafica getInterfaceGrafica()**
+Retorna a instancia da interface grafica
+
+**void paintComponent(Graphics g)**
+pinta o mapa na tela
+
+**void movimentaSul()**
+movimenta a chapeuzinho para o sul 1 casa
+
+**void movimentaNorte()**
+movimenta a chapeuzinho para o norte 1 casa
+
+**void movimentaLeste()**
+movimenta a chapeuzinho para o leste 1 casa
+
+**void movimentaOeste()**
+movimenta a chapeuzinho para o oeste 1 casa
 
 
 **
