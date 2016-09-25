@@ -9,7 +9,6 @@ import java.util.*;
 public class A_estrela{
 
 	private int clareiras_esperadas;
-	private int clareiras_passadas;
 	private Celula ponto_inicial;
 	private Celula ponto_final;
 	private Mapa floresta;
@@ -20,7 +19,6 @@ public class A_estrela{
 
 	public A_estrela(int clareiras_esperadas, Celula ponto_inicial, Celula ponto_final, Mapa floresta, Encontros encontros){
 		this.clareiras_esperadas = clareiras_esperadas;
-		this.clareiras_passadas = 0;
 		this.ponto_inicial = ponto_inicial;
 		this.ponto_final = ponto_final;
 		this.floresta = floresta;
@@ -36,14 +34,11 @@ public class A_estrela{
 		this.ccelulas_planejadas.remove(this.ccelula_atual);//remove celula usada da lista de celulas planejadas
 		this.ccaminho.add(this.ccelula_atual);//e coloca na de passadas
 		this.ccelula_atual.ObterPai().DesTornarFolha();//faz com que o pai da celula atual pare de ser folha
-		
-		if(this.ccelula_atual.ObterCelula().custo == -1)//caso seja um clareira
-			this.clareiras_passadas++;//aumenta o contador
 
 		ArrayList<Celula> celulas_vizinhas = this.floresta.ObterVizinhos(this.ccelula_atual.ObterCelula());//pega as casas vizinhas
 		
 		for (Celula celula : celulas_vizinhas) {//para cada casa vizinha
-			this.ccelulas_planejadas.add(new Corrente_Celula(celula, this.ccelula_atual, Heuristica(celula), this.encontros.ObterCustoEncontro(this.clareiras_passadas)));//adiciona na lista de celulas planejadas
+			this.ccelulas_planejadas.add(new Corrente_Celula(celula, this.ccelula_atual, Heuristica(celula), this.encontros));//adiciona na lista de celulas planejadas
 		}
 
 		this.ccelulas_planejadas.sort(Corrente_Celula.Comparar_Custo);//organiza a lista de celula planejadas, para a melhor celula ficar na frente
@@ -99,7 +94,7 @@ public class A_estrela{
 	}
 	
 	public int ObterClareirasPassadas(){
-		return this.clareiras_passadas;
+		return this.ccelula_atual.ObterClareirasPassadas();
 	}
 	
 	public ArrayList<Corrente_Celula> ObterCaminhoPlanejado(){
