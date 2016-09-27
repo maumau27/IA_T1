@@ -130,10 +130,14 @@ class Encontro {
 		
 		if( doc != null ) {
 			fator = doc.fator;
-		}
+		} 
 		
 		for( Doce doceEncontro : this.doces ) {
 			fator = fator + doceEncontro.fator;
+		}
+		
+		if( fator <= 0.01 ) {
+			fator = 1;
 		}
 		
 		return ( this.custoOriginal / fator );
@@ -202,7 +206,7 @@ public class Encontros {
 	public void CalcularEncontros( int qtd , int algoritmo ) {
 		switch( algoritmo ) {
 			case 1:
-				this.AlgoritmoGuloso( qtd );
+				this.AlgoritmoGuloso1( qtd );
 				break;
 			
 			case 2:
@@ -214,7 +218,7 @@ public class Encontros {
 		}
 	}
 	
-	private void AlgoritmoGuloso( int qtd ) {	
+	private void AlgoritmoGuloso1( int qtd ) {	
 		// Prepara lista de doces disponiveis
 		ArrayList<Doce> docesDisponiveis = new ArrayList<Doce>();
 		for( PunhadoDeDoce punDoces : this.cesta.inventarioOriginal ) {
@@ -235,6 +239,7 @@ public class Encontros {
 		Doce doceGanhador;
 		
 		// Distribui doces minimos - minimiza diferenças
+		
 		encontrosAReceberDoce = new ArrayList<Encontro>();
 		
 		for( int i = 0 ; i < qtd ; i++ ) {
@@ -242,14 +247,14 @@ public class Encontros {
 		}
 		
 		while( encontrosAReceberDoce.size() > 0 ) {
-			doceGanhador = Cesta.piorDoce(docesDisponiveis);
+			doceGanhador = Cesta.melhorDoce(docesDisponiveis);
 			
 			encontroGanhador = encontrosAReceberDoce.get(0);
-			diferencaGanhadora = encontroGanhador.simularDiferenca( doceGanhador );
-
+			diferencaGanhadora = encontroGanhador.simularDiferenca( doceGanhador );	
+			
 			for( Encontro enc : encontrosAReceberDoce ) {
-				double tempDiff = enc.simularDiferenca( doceGanhador);
-				if( tempDiff < diferencaGanhadora ) {
+				double tempDiff = enc.simularDiferenca( doceGanhador );
+				if( tempDiff > diferencaGanhadora ) {
 					encontroGanhador = enc;
 					diferencaGanhadora = tempDiff;
 				}
@@ -260,6 +265,8 @@ public class Encontros {
 			docesDisponiveis.remove( doceGanhador );
 		}
 		
+		//this.ImprimirEncontros();
+		
 		// Distribui doces - maximiza diferenças
 		encontrosAReceberDoce = new ArrayList<Encontro>();
 		
@@ -269,22 +276,24 @@ public class Encontros {
 		
 		ArrayList <Doce> docesQueFaltam = new ArrayList<Doce>();  
 		ArrayList <Encontro> encontrosARemover = new ArrayList<Encontro>();  
-		while( encontrosAReceberDoce.size() > 0 ) {
+		while( encontrosAReceberDoce.size() > 0 && docesDisponiveis.size() > 0 ) {
 			encontroGanhador = null;
 			doceGanhador = null;
 			diferencaGanhadora = 0;
 			encontrosARemover.clear();
+			
+			doceGanhador = Cesta.melhorDoce( docesDisponiveis );
 
 			for( Encontro enc : encontrosAReceberDoce ) {
-				docesQueFaltam = enc.docesQueFaltam( docesDisponiveis );
-
+				
+				docesQueFaltam = enc.docesQueFaltam( docesDisponiveis );			
+				
 				if( docesQueFaltam.size() <= 0 ) {
 					// Tira 
 					encontrosARemover.add( encontroGanhador );
-					//encontrosAReceberDoce.remove( encontroGanhador );	
-				} else {
+				} else if( docesQueFaltam.contains( doceGanhador ) ) {	
 					// Calcula o ganho de dar o melhor doce possivel para este encontro
-					doceGanhador = Cesta.melhorDoce(docesQueFaltam);
+					//double tempDiff =  enc.custoOriginal - enc.calcularCustoEncontro( doceGanhador );
 					double tempDiff = enc.simularDiferenca( doceGanhador );
 					
 					if( encontroGanhador == null || tempDiff > diferencaGanhadora  ) {
@@ -302,11 +311,15 @@ public class Encontros {
 				break;
 			}			
 			
+			//System.out.println("Encontro: " + this.encontros.lastIndexOf( encontroGanhador ) + " recebeu doce: " + doceGanhador.tipo + " | " + doceGanhador.fator );
+			
 			// Atualiza as listas
 			encontroGanhador.adicionarDoce( doceGanhador );
 			docesDisponiveis.remove( doceGanhador );
+			
 		}
 	}
+	
 	
 	private void AlgoritmoForcaBruta1(int qtd) {
 		// Lucas, desenvolve o teu força bruta no AlgoritmoForcaBruta2
@@ -387,7 +400,8 @@ public class Encontros {
 			custoTotalOriginal += enc.custoOriginal;
 			System.out.print( "\n\nEncontro: " + count + "\tCusto: " + custoTemp + " / " + enc.custoOriginal + "\nDoces:\t");
 			for( Doce doc : enc.doces ) {
-				System.out.print( doc.tipo + " | ");
+				
+				System.out.printf( "%d(%.1f) | " , doc.tipo , doc.fator );
 			}
 			count++;
 		}
