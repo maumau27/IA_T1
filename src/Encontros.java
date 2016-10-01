@@ -124,16 +124,18 @@ class Encontro {
 	public void adicionarDoce( Doce doc ) {
 		doces.add(doc);
 	}
-	
-	public double calcularCustoEncontro( Doce doc ) {
+
+	public double calcularCustoEncontro( Doce docAdicional , Doce docIgnorado ) {
 		double fator = 0;
 		
-		if( doc != null ) {
-			fator = doc.fator;
+		if( docAdicional != null ) {
+			fator = docAdicional.fator;
 		} 
 		
-		for( Doce doceEncontro : this.doces ) {
-			fator = fator + doceEncontro.fator;
+		for( Doce doceEncontro : this.doces ) {		
+			if( docIgnorado == null || docIgnorado.tipo != doceEncontro.tipo ) {
+				fator = fator + doceEncontro.fator;
+			}
 		}
 		
 		if( fator <= 0.01 ) {
@@ -141,6 +143,10 @@ class Encontro {
 		}
 		
 		return ( this.custoOriginal / fator );
+	}	
+	
+	public double calcularCustoEncontro( Doce doc ) {
+		return this.calcularCustoEncontro( doc , null );
 	}	
 	
 	public double simularDiferenca( Doce doc ) {
@@ -231,21 +237,65 @@ public class Encontros {
 		// Separa o doce da vovo
 		this.doceDaVovo = Cesta.piorDoce( docesDisponiveis );
 		docesDisponiveis.remove(doceDaVovo);
-				
-		// Variaveis dos proximos passos
-		ArrayList<Encontro> encontrosAReceberDoce;
-		Encontro encontroGanhador; 
-		double diferencaGanhadora;
-		Doce doceGanhador;
 		
-		// Distribui doces minimos - minimiza diferenças
+		// Cria lista combinando as possiveis N-uplas de encontros
+		ArrayList<ArrayList<ArrayList<Encontro>>> uplas = new ArrayList<ArrayList<ArrayList<Encontro>>>();
+		for( int i = 0 ; i < qtd ; i ++ ) {
+			uplas.add( new ArrayList<ArrayList<Encontro>>() );
+		}	
+		this.AlgoritmoGuloso1_aux1_combinacao( uplas , this.encontros , new ArrayList<Encontro>() , 0 );
 		
-		encontrosAReceberDoce = new ArrayList<Encontro>();
+			
+		// Distribui todos disponiveis para todos os encontros
+		this.AlgoritmoGuloso1_aux2_distribuicao( uplas.get(qtd-1).get(0) , docesDisponiveis );
 		
-		for( int i = 0 ; i < qtd ; i++ ) {
-			encontrosAReceberDoce.add( this.encontros.get(i) );
+		// Testa redistribuições para encontros em duplas, triplas, quadruplas ... n-uplas
+		for( int i = uplas.size() - 2 ; i >= 0 ; i-- ) {
+			for( int j = 1 ; j < uplas.get(i).size() ; j++ ) {
+				this.AlgoritmoGuloso1_aux2_distribuicao( uplas.get(i).get(j) , new ArrayList<Doce>() );
+			}
+		}	
+	}
+	
+	private void AlgoritmoGuloso1_aux1_combinacao( ArrayList<ArrayList<ArrayList<Encontro>>> listaEncontros , ArrayList<Encontro> encontrosOriginais ,  ArrayList<Encontro> ultimaLista , int pos ) {
+		if( pos >= encontrosOriginais.size() ) {
+			return;
 		}
 		
+		for( int i = pos ; i < encontrosOriginais.size() ; i ++ ) {
+			ArrayList<Encontro> novaLista = new ArrayList<Encontro>(ultimaLista);
+			novaLista.add( encontrosOriginais.get(i) );
+			listaEncontros.get( novaLista.size()-1 ).add( novaLista );
+			
+			this.AlgoritmoGuloso1_aux1_combinacao( listaEncontros , encontrosOriginais , novaLista , (i+1) );
+		}
+		
+	}	
+	
+	private void AlgoritmoGuloso1_aux2_distribuicao( ArrayList<Encontro> encontros , ArrayList<Doce> docesDisponiveis ) {
+		// Armazena estado atual
+		double custoTotalOriginal = 0;
+		double custoTotalFinal = 0;
+		
+		ArrayList<Encontro> encontrosTemporarios = new ArrayList<Encontro>();
+		
+		for( Encontro enc : encontros ) {
+			custoTotalOriginal += enc.calcularCustoEncontro(null);		
+			encontrosTemporarios.add( new Encontro( enc.custoOriginal ) );
+			
+			for( Doce doc : enc.doces ) {
+				docesDisponiveis.add(doc);
+			}
+		}
+		
+		ArrayList<Encontro> encontrosAReceberDoce = new ArrayList<Encontro>(encontrosTemporarios);
+		
+		// Variaveis locais
+		Encontro encontroGanhador;
+		Doce doceGanhador;
+		double diferencaGanhadora;
+		
+		// Distribui doces minimos - minimiza diferenças		
 		while( encontrosAReceberDoce.size() > 0 ) {
 			doceGanhador = Cesta.melhorDoce(docesDisponiveis);
 			
@@ -265,17 +315,12 @@ public class Encontros {
 			docesDisponiveis.remove( doceGanhador );
 		}
 		
-		//this.ImprimirEncontros();
-		
-		// Distribui doces - maximiza diferenças
-		encontrosAReceberDoce = new ArrayList<Encontro>();
-		
-		for( int i = 0 ; i < qtd ; i++ ) {
-			encontrosAReceberDoce.add( this.encontros.get(i) );
-		}
-		
+		// Distribui doces - maximiza diferenças		
 		ArrayList <Doce> docesQueFaltam = new ArrayList<Doce>();  
 		ArrayList <Encontro> encontrosARemover = new ArrayList<Encontro>();  
+		
+		encontrosAReceberDoce = new ArrayList<Encontro>(encontrosTemporarios);
+		
 		while( encontrosAReceberDoce.size() > 0 && docesDisponiveis.size() > 0 ) {
 			encontroGanhador = null;
 			doceGanhador = null;
@@ -316,10 +361,126 @@ public class Encontros {
 			// Atualiza as listas
 			encontroGanhador.adicionarDoce( doceGanhador );
 			docesDisponiveis.remove( doceGanhador );
-			
+		}
+		
+		// Permutações entre as soluções
+		
+		Encontro encontroTrocaA;
+		Encontro encontroTrocaB;
+		Doce doceTrocaA;
+		Doce doceTrocaB;
+		
+		double custoOrigemOriginal;	
+		double custoTestadoOriginal;
+		
+		double custoSomadoOriginal;
+		double custoSomadoTroca;
+		
+		int haveFlag;
+		
+		for( int i = 0 ; i < 2 ; i++ ) {
+			for( Encontro encOrigem : encontrosTemporarios ) {
+				custoOrigemOriginal = encOrigem.calcularCustoEncontro( null );
+				
+				ArrayList<Doce> listaDeDocesOriginais = new ArrayList<Doce>( encOrigem.doces );
+				for( Doce docOrigem : listaDeDocesOriginais ) { 
+					encontroTrocaA = null;
+					encontroTrocaB = null;
+					doceTrocaA = null;
+					doceTrocaB = null;
+					
+					for( Encontro encTestado : encontrosTemporarios ) {
+						if( encOrigem == encTestado ) {
+							continue;
+						}
+						custoTestadoOriginal = encTestado.calcularCustoEncontro( null );
+						custoSomadoOriginal = custoOrigemOriginal + custoTestadoOriginal;
+						
+						haveFlag = 0;
+						ArrayList<Doce> listaDeDocesTestados = new ArrayList<Doce>( encTestado.doces );
+						
+						for( Doce docTestado : listaDeDocesTestados ) {
+							if( docTestado.tipo == docOrigem.tipo ) {
+								haveFlag = 1;
+							} else {		
+								custoSomadoTroca = encOrigem.calcularCustoEncontro( docTestado , docOrigem );
+								custoSomadoTroca += encTestado.calcularCustoEncontro( docOrigem , docTestado );
+								
+								if( custoSomadoOriginal > custoSomadoTroca ) {
+									//System.out.println("ACHEI: " + custoSomadoOriginal + " | " + custoSomadoTroca );
+									
+									// Debug apenas: Evitar doces repetidos
+									int haveFlag2 = 0;
+									for( Doce dc : encOrigem.doces ) {
+										if( dc.tipo == docTestado.tipo ) {
+											haveFlag2 = 1;
+										}
+									}
+									for( Doce dc : encTestado.doces ) {
+										if( dc.tipo == docOrigem.tipo ) {
+											haveFlag2 = 1;
+										}
+									}
+										
+									// Troca efetiva
+									if( haveFlag2 == 0 ) {
+										encontroTrocaA = encOrigem;
+										encontroTrocaB = encTestado;
+										
+										doceTrocaA = docOrigem;
+										doceTrocaB = docTestado;
+									}
+								}
+							}
+						}
+						
+						// Testa doando o doce ( sem trocar por nada )
+						if( haveFlag == 0 ) {
+							custoSomadoTroca = encOrigem.calcularCustoEncontro( null , docOrigem );
+							custoSomadoTroca += encTestado.calcularCustoEncontro( docOrigem , null );
+							
+							if( custoSomadoOriginal > custoSomadoTroca ) {
+								//System.out.println("ACHEI: " + custoSomadoOriginal + " | " + custoSomadoTroca );
+								encontroTrocaA = encOrigem;
+								encontroTrocaB = encTestado;
+								
+								doceTrocaA = docOrigem;
+								doceTrocaB = null;
+							}
+						}
+					}
+					
+					// Faz a troca de doces
+					if( encontroTrocaB != null ) {
+						//System.out.println("ACHEI: " + encontroTrocaA.custoOriginal + ">" + doceTrocaA.fator + " | " + encontroTrocaB.custoOriginal + ">" + doceTrocaB.fator );
+						encontroTrocaA.doces.remove(doceTrocaA);
+						encontroTrocaB.doces.add(doceTrocaA);
+						
+						if( doceTrocaB != null ) {
+							encontroTrocaB.doces.remove(doceTrocaB);
+							encontroTrocaA.doces.add(doceTrocaB);
+						}
+					}
+				}
+			}
+		}
+		
+		
+		// Checa se a solução nova é melhor do que a anterior
+		for( Encontro enc : encontrosTemporarios ) {
+			custoTotalFinal += enc.calcularCustoEncontro(null);		
+		}
+		if( custoTotalOriginal > custoTotalFinal ) {
+			// Solução melhor, substitui encontros originais
+			for( Encontro encVelho : encontros ) {
+				for( Encontro encNovo : encontrosTemporarios ) {
+					if( encVelho.custoOriginal == encNovo.custoOriginal ) {
+						encVelho.doces = encNovo.doces;
+					}
+				}
+			}
 		}
 	}
-	
 	
 	private void AlgoritmoForcaBruta1(int qtd) {
 		// Lucas, desenvolve o teu força bruta no AlgoritmoForcaBruta2
