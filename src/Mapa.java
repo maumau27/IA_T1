@@ -97,7 +97,7 @@ public class Mapa {
 	
 	public Celula ObterCelula( int x , int y ) {
 		if( this.PertenceAoMapa( x , y ) ) {
-			return  ObterCelula( x,y );
+			return  new Celula( x ,y, ObterTerreno(x, y), ObterTempo(x, y) );
 		} else {
 			return null;
 		}

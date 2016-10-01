@@ -9,14 +9,17 @@ public class Corrente_Celula{
 	public boolean flag_folha;
 	
 	public Corrente_Celula(Celula celula_atual, Corrente_Celula celula_pai, double heuristica, Encontros encontro){
-		this.clareiras_passadas = this.celula_pai.ObterClareirasPassadas();
-		if(celula_atual.custo > 0)
-			this.clareiras_passadas++;
+		this.flag_folha = true;
 		this.celula_atual = celula_atual;
 		this.celula_pai = celula_pai;
-		this.custo_acumulado = celula_pai.custo_acumulado + ((celula_atual.custo > 0) ? celula_atual.custo : encontro.ObterCustoEncontro(this.clareiras_passadas)) ;
+		this.clareiras_passadas = this.celula_pai.ObterClareirasPassadas();
+		if(celula_atual.custo < 0)
+			this.clareiras_passadas++;
+		if(celula_atual.custo != -1)
+			this.custo_acumulado = celula_pai.custo_acumulado + celula_atual.custo;
+		else
+			this.custo_acumulado = celula_pai.custo_acumulado + encontro.ObterCustoEncontro(this.clareiras_passadas);
 		this.custo_total = this.custo_acumulado + heuristica;
-		this.flag_folha = true;
 	}
 	
 	public Corrente_Celula(Celula celula_atual, double heuristica){

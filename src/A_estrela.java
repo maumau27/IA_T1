@@ -27,13 +27,15 @@ public class A_estrela{
 		this.ccaminho = new ArrayList<Corrente_Celula>();
 		this.ccelulas_planejadas.add(new Corrente_Celula(ponto_inicial, Heuristica(ponto_inicial)));
 		this.encontros = encontros;
+		Iterar();
 	}
 	
 	private void Iterar(){
 		this.ccelula_atual = this.ccelulas_planejadas.get(0);//da um passo
 		this.ccelulas_planejadas.remove(this.ccelula_atual);//remove celula usada da lista de celulas planejadas
 		this.ccaminho.add(this.ccelula_atual);//e coloca na de passadas
-		this.ccelula_atual.ObterPai().DesTornarFolha();//faz com que o pai da celula atual pare de ser folha
+		if(this.ccelula_atual.ObterPai() != null)
+			this.ccelula_atual.ObterPai().DesTornarFolha();//faz com que o pai da celula atual pare de ser folha
 
 		ArrayList<Celula> celulas_vizinhas = this.floresta.ObterVizinhos(this.ccelula_atual.ObterCelula());//pega as casas vizinhas
 		
@@ -106,6 +108,6 @@ public class A_estrela{
 	}
 	
 	public double Heuristica(Celula casa_inicial) {
-		return (casa_inicial.x - this.ponto_final.x) + (casa_inicial.y - this.ponto_final.y);
+		return Math.abs(casa_inicial.x - this.ponto_final.x) + Math.abs(casa_inicial.y - this.ponto_final.y);
 	}
 }
