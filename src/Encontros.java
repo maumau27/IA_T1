@@ -163,10 +163,8 @@ public class Encontros {
 	private Cesta cesta;
 
 	private Doce doceDaVovo;	
-	private ArrayList<Doce> doces = new ArrayList<Doce>();
-	private Encontros encontrosCalculados[];
-	private ArrayList<Double> encontrosCustosOriginais = new ArrayList<Double>();
 
+	public int encontrosCalculados;
 	
 	public Encontros() {
 		this( "encontros.txt" );
@@ -210,6 +208,8 @@ public class Encontros {
 	}
 	
 	public void CalcularEncontros( int qtd , int algoritmo ) {
+		this.encontrosCalculados = qtd;
+		
 		switch( algoritmo ) {
 			case 1:
 				this.AlgoritmoGuloso1( qtd );
@@ -239,11 +239,13 @@ public class Encontros {
 		docesDisponiveis.remove(doceDaVovo);
 		
 		// Cria lista combinando as possiveis N-uplas de encontros
+		ArrayList<Encontro> EncontrosParticipantes = new ArrayList<Encontro>();
 		ArrayList<ArrayList<ArrayList<Encontro>>> uplas = new ArrayList<ArrayList<ArrayList<Encontro>>>();
 		for( int i = 0 ; i < qtd ; i ++ ) {
 			uplas.add( new ArrayList<ArrayList<Encontro>>() );
+			EncontrosParticipantes.add( this.encontros.get(i) );
 		}	
-		this.AlgoritmoGuloso1_aux1_combinacao( uplas , this.encontros , new ArrayList<Encontro>() , 0 );
+		this.AlgoritmoGuloso1_aux1_combinacao( uplas , EncontrosParticipantes , new ArrayList<Encontro>() , 0 );
 		
 			
 		// Distribui todos disponiveis para todos os encontros
@@ -253,6 +255,7 @@ public class Encontros {
 		for( int i = uplas.size() - 2 ; i >= 0 ; i-- ) {
 			for( int j = 1 ; j < uplas.get(i).size() ; j++ ) {
 				this.AlgoritmoGuloso1_aux2_distribuicao( uplas.get(i).get(j) , new ArrayList<Doce>() );
+				//AlgoritmoGuloso1_aux3_trocas( uplas.get(qtd-1).get(0) );	
 			}
 		}	
 	}
@@ -364,6 +367,26 @@ public class Encontros {
 		}
 		
 		// Permutações entre as soluções
+		AlgoritmoGuloso1_aux3_trocas( encontrosTemporarios );	
+		
+		// Checa se a solução nova é melhor do que a anterior
+		for( Encontro enc : encontrosTemporarios ) {
+			custoTotalFinal += enc.calcularCustoEncontro(null);		
+		}
+		if( custoTotalOriginal > custoTotalFinal ) {
+			// Solução melhor, substitui encontros originais
+			for( Encontro encVelho : encontros ) {
+				for( Encontro encNovo : encontrosTemporarios ) {
+					if( encVelho.custoOriginal == encNovo.custoOriginal ) {
+						encVelho.doces = encNovo.doces;
+					}
+				}
+			}
+		}
+	}
+
+	private void AlgoritmoGuloso1_aux3_trocas( ArrayList<Encontro> listaEncontros ) {
+		// Permutações entre as soluções
 		
 		Encontro encontroTrocaA;
 		Encontro encontroTrocaB;
@@ -379,7 +402,7 @@ public class Encontros {
 		int haveFlag;
 		
 		for( int i = 0 ; i < 2 ; i++ ) {
-			for( Encontro encOrigem : encontrosTemporarios ) {
+			for( Encontro encOrigem : listaEncontros ) {
 				custoOrigemOriginal = encOrigem.calcularCustoEncontro( null );
 				
 				ArrayList<Doce> listaDeDocesOriginais = new ArrayList<Doce>( encOrigem.doces );
@@ -389,7 +412,7 @@ public class Encontros {
 					doceTrocaA = null;
 					doceTrocaB = null;
 					
-					for( Encontro encTestado : encontrosTemporarios ) {
+					for( Encontro encTestado : listaEncontros ) {
 						if( encOrigem == encTestado ) {
 							continue;
 						}
@@ -460,22 +483,6 @@ public class Encontros {
 							encontroTrocaB.doces.remove(doceTrocaB);
 							encontroTrocaA.doces.add(doceTrocaB);
 						}
-					}
-				}
-			}
-		}
-		
-		
-		// Checa se a solução nova é melhor do que a anterior
-		for( Encontro enc : encontrosTemporarios ) {
-			custoTotalFinal += enc.calcularCustoEncontro(null);		
-		}
-		if( custoTotalOriginal > custoTotalFinal ) {
-			// Solução melhor, substitui encontros originais
-			for( Encontro encVelho : encontros ) {
-				for( Encontro encNovo : encontrosTemporarios ) {
-					if( encVelho.custoOriginal == encNovo.custoOriginal ) {
-						encVelho.doces = encNovo.doces;
 					}
 				}
 			}
@@ -555,7 +562,11 @@ public class Encontros {
 		
 		System.out.println("Encontros: ");
 		
-		for( Encontro enc : this.encontros ) {
+		Encontro enc;
+		
+		for( int i = 0 ; i < encontrosCalculados ; i++ )  {
+			enc = this.encontros.get(i);
+		
 			custoTemp = enc.calcularCustoEncontro(null);
 			custoTotal += custoTemp;
 			custoTotalOriginal += enc.custoOriginal;
