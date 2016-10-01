@@ -63,7 +63,11 @@ public class A_estrela{
 	}
 	
 	public int DarPasso(){
-		if(this.ccelula_atual.ObterCelula().x == this.ponto_final.x && this.ccelula_atual.ObterCelula().y == ponto_final.y){
+		if(this.ccelula_atual == null){
+			this.Iterar();
+			return 0;
+		}
+		else if(this.ccelula_atual.ObterCelula().x == this.ponto_final.x && this.ccelula_atual.ObterCelula().y == ponto_final.y){
 			return 1;
 		}
 		else{
