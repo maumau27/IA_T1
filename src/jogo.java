@@ -14,12 +14,19 @@ public class jogo {
 		
 		//System.out.println( "Custo do Encontro 1: " + enc.ObterCustoEncontro(1) +"\n\n" );
 		
-		//enc.ImprimirEncontros();
+		enc.ImprimirEncontros();
 		
-		a.DarPasso(1000);
-		//a.VoltarPasso();
+		// Da um quantidade definida de passos
+		for( int i = 0 ; i < 50 ; i ++ ) {
+			a.DarPasso(1);
+			//a.VoltarPasso();
+			System.out.println("Celula atual : (" + a.ObterCelulaAtual().ObterCelula().x + "," + a.ObterCelulaAtual().ObterCelula().y + ")" );
+		}
 		
-		System.out.println("Celula atual : (" + a.ObterCelulaAtual().ObterCelula().x + "," + a.ObterCelulaAtual().ObterCelula().y + ")" );
-	
+		// Roda ate o final
+		while( a.DarPasso(1) != true ) {
+			System.out.println("Celula atual : (" + a.ObterCelulaAtual().ObterCelula().x + "," + a.ObterCelulaAtual().ObterCelula().y + ")" );
+		}
+		
 	}
 }
