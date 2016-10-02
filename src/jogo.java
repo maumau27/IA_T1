@@ -18,15 +18,20 @@ public class jogo {
 		
 		// Da um quantidade definida de passos
 		for( int i = 0 ; i < 50 ; i ++ ) {
-			a.DarPasso(1);
+			a.DarPasso( 1 , true );
 			//a.VoltarPasso();
 			System.out.println("Celula atual : (" + a.ObterCelulaAtual().ObterCelula().x + "," + a.ObterCelulaAtual().ObterCelula().y + ")" );
 		}
 		
 		// Roda ate o final
-		while( a.DarPasso(1) != true ) {
+		while( a.DarPasso( 1 , true ) != true ) {
 			System.out.println("Celula atual : (" + a.ObterCelulaAtual().ObterCelula().x + "," + a.ObterCelulaAtual().ObterCelula().y + ")" );
 		}
+		
+		// Verifica custo total
+		System.out.println("Custo Total: " + a.ObterCelulaAtual().ObterCustoAcumulado() );
+		
+		
 		
 	}
 }
