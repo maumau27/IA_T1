@@ -82,6 +82,77 @@ Retorna o custo de um encontro especifico.
 **void ImprimirEncontros()**
 Imprime como ficou a distribuição de doces por encontro, os doces são exibidos por um ID ( ordem de leitura no arquivo ).
 
+## Classe: AeController
+Controlador do A*.
+
+### Construtor:
+**public AeController(Mapa floresta)**
+
+### Metodos:
+
+**void DarPasso(int n_passos = null)**
+Acança o A* em uma iteração caso não receba argumentos. Pode receber um int para avaçar n_passos iterações.
+
+**void VoltarPasso(int n_passos)**
+Retorcede o A* em uma iteração caso não receba argumentos. Pode receber um int para retorceder n_passos iterações.
+
+**Corrente_Celula ObterCelulaAtual()**
+Retorna a corrente de celula da iteração atual do A*.
+
+**ArrayList<Corrente_Celula> ObterCaminho()**
+Retorna a lista de corrente de celulas pelos quais o A* passou.
+
+**ArrayList<Corrente_Celula> ObterCaminhoPlanejado()**
+Retorna a lista de corrente de celulas cuja o A* planejou andar.
+
+
+## Classe: Corrente de Celula
+Estrutura usada pelo A* para trabalhar com celulas. Não é necessario o contrutor, pois somente o A* o usa.
+
+### Metodos:
+
+**Corrente_Celula ObterPai()**
+Retorna a corrente de celula pai da corrente de celula atual.
+
+**Celula ObterCelula()**
+Retorna a celula da corrente de celula atual.
+
+**HeFolha()**
+Retorna *true* caso a corrente de celula seja uma folha, *false* caso contrario.
+
+**ObterCustoAcumulado()**
+Retorna o custo do inicio até a celula da corrente de celula atual.
+
+## Classe: Tela
+Frame da que roda a interface grafica.
+
+### Construtor:
+**Tela()**
+
+## Classe: InterfaceGrafica
+Painel da interface grafica do programa (singleton).
+
+### Construtor (privado):
+**InterfaceGrafica()**
+
+### Metodos:
+**static InterfaceGrafica getInterfaceGrafica()**
+Retorna a instancia da interface grafica
+
+**void paintComponent(Graphics g)**
+pinta o mapa na tela
+
+**void movimentaSul()**
+movimenta a chapeuzinho para o sul 1 casa
+
+**void movimentaNorte()**
+movimenta a chapeuzinho para o norte 1 casa
+
+**void movimentaLeste()**
+movimenta a chapeuzinho para o leste 1 casa
+
+**void movimentaOeste()**
+movimenta a chapeuzinho para o oeste 1 casa
 
 
 **

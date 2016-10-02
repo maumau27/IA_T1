@@ -8,12 +8,18 @@ public class jogo {
 		// TODO Auto-generated method stub
 		Mapa map = new Mapa();
 		Encontros enc = new Encontros();
+		AeController a = new AeController(map);
 		
 		enc.CalcularEncontros(10);
 		
-		System.out.println( "Custo do Encontro 1: " + enc.ObterCustoEncontro(1) +"\n\n" );
+		//System.out.println( "Custo do Encontro 1: " + enc.ObterCustoEncontro(1) +"\n\n" );
 		
-		enc.ImprimirEncontros();
+		//enc.ImprimirEncontros();
+		
+		a.DarPasso(1000);
+		//a.VoltarPasso();
+		
+		System.out.println("Celula atual : (" + a.ObterCelulaAtual().ObterCelula().x + "," + a.ObterCelulaAtual().ObterCelula().y + ")" );
 	
 	}
 }
