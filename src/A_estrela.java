@@ -30,9 +30,23 @@ public class A_estrela{
 		Iterar();
 	}
 	
+	private Corrente_Celula ObterCelulaMaisProxima( ArrayList<Corrente_Celula> lista ) {
+		Corrente_Celula melhorCelula = lista.get(0);
+		double menorCusto = melhorCelula.ObterCustoTotal();
+		
+		for( Corrente_Celula cor : lista ) {
+			if( cor.ObterCustoTotal() < menorCusto ) {
+				menorCusto = cor.ObterCustoTotal();
+				melhorCelula = cor;
+			}
+		}
+		
+		return melhorCelula;
+	}
+	
 	private void Iterar(){
-		this.ccelula_atual = this.ccelulas_planejadas.get(0);//da um passo
-		this.ccelulas_planejadas.remove(this.ccelula_atual);//remove celula usada da lista de celulas planejadas
+		this.ccelula_atual = this.ObterCelulaMaisProxima(ccelulas_planejadas);//da um passo
+		this.ccelulas_planejadas.remove(ccelula_atual);//remove celula usada da lista de celulas planejadas
 		this.ccaminho.add(this.ccelula_atual);//e coloca na de passadas
 		if(this.ccelula_atual.ObterPai() != null)
 			this.ccelula_atual.ObterPai().DesTornarFolha();//faz com que o pai da celula atual pare de ser folha
@@ -40,10 +54,34 @@ public class A_estrela{
 		ArrayList<Celula> celulas_vizinhas = this.floresta.ObterVizinhos(this.ccelula_atual.ObterCelula());//pega as casas vizinhas
 		
 		for (Celula celula : celulas_vizinhas) {//para cada casa vizinha
+			int addFlag = 1;
+
+			// Checa se a celula vizinha ja esta cadastrada na lista dos passados ( caminho ) 
+			for( Corrente_Celula cor : ccaminho ) {
+				if( cor.ObterCelula().x == celula.x && cor.ObterCelula().y == celula.y ) {
+					addFlag = 0;
+					break;
+				}
+			}
+			if( addFlag == 0 ) {
+				continue;
+			}			
+			
+			// Checa se a celula vizinha ja esta cadastrada na propria lista de celulas planejadas
+			for( Corrente_Celula cor : ccelulas_planejadas ) {
+				if( cor.ObterCelula().x == celula.x && cor.ObterCelula().y == celula.y ) {
+					addFlag = 0;
+					break;
+				}
+			}
+			if( addFlag == 0 ) {
+				continue;
+			}
+			
 			this.ccelulas_planejadas.add(new Corrente_Celula(celula, this.ccelula_atual, Heuristica(celula), this.encontros));//adiciona na lista de celulas planejadas
 		}
 
-		this.ccelulas_planejadas.sort(Corrente_Celula.Comparar_Custo);//organiza a lista de celula planejadas, para a melhor celula ficar na frente
+		//this.ccelulas_planejadas.sort(Corrente_Celula.Comparar_Custo);//organiza a lista de celula planejadas, para a melhor celula ficar na frente
 	}
 	
 	private void DesIterar(){
