@@ -210,6 +210,10 @@ public class Encontros {
 	public void CalcularEncontros( int qtd , int algoritmo ) {
 		this.encontrosCalculados = qtd;
 		
+		for( Encontro enc : this.encontros ) {
+			enc.doces.clear();
+		}
+		
 		switch( algoritmo ) {
 			case 1:
 				this.AlgoritmoGuloso1( qtd );
@@ -553,15 +557,21 @@ public class Encontros {
 	public double ObterCustoEncontro( int numeroDoEncontro ) {
 		return this.encontros.get( numeroDoEncontro - 1 ).calcularCustoEncontro(null);
 	}
+
+	public void ImprimirEncontros( boolean detalhado ) {
+		this.ImprimirEncontros( detalhado , "" );
+	}
 	
-	public void ImprimirEncontros() {
+	public void ImprimirEncontros( boolean detalhado , String prefix ) {
 		int count = 0;
 		double custoTotal = 0;
 		double custoTotalOriginal = 0;
 		double custoTemp = 0;
 		
-		System.out.println("Encontros: ");
-		
+		if( detalhado == true ) {
+			System.out.println(prefix+"Encontros: ");
+		}
+			
 		Encontro enc;
 		
 		for( int i = 0 ; i < encontrosCalculados ; i++ )  {
@@ -570,15 +580,27 @@ public class Encontros {
 			custoTemp = enc.calcularCustoEncontro(null);
 			custoTotal += custoTemp;
 			custoTotalOriginal += enc.custoOriginal;
-			System.out.print( "\n\nEncontro: " + count + "\tCusto: " + custoTemp + " / " + enc.custoOriginal + "\nDoces:\t");
-			for( Doce doc : enc.doces ) {
-				
-				System.out.printf( "%d(%.1f) | " , doc.tipo , doc.fator );
+			
+			if( detalhado == true ) {
+				System.out.print( "\n" + prefix + "Encontro: " + count + "\tCusto: " + custoTemp + " / " + enc.custoOriginal + "\n" + prefix + "Doces:\t");
+				for( Doce doc : enc.doces ) {	
+					System.out.printf( "%d(%.1f) | " , doc.tipo , doc.fator );
+				}
+			}
+			else {
+				System.out.print("\n" + prefix + "Encontro: " + (i+1) + "\t");
+				System.out.printf("Custo: %.2f ||| Doces: " , enc.calcularCustoEncontro(null) );
+				for( Doce doc : enc.doces ) {	
+					System.out.printf( "%d(%.1f) ; " , doc.tipo + 1 , doc.fator );
+				}
 			}
 			count++;
 		}
-		System.out.println("\nCusto Total: " + custoTotal + " / " + custoTotalOriginal);
-		System.out.println("\n\n");
+		
+		if( detalhado == true ) {
+			System.out.println("\nCusto Total: " + custoTotal + " / " + custoTotalOriginal);
+			System.out.println("\n\n");
+		}
 	}
 }
 	
