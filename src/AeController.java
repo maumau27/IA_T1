@@ -20,12 +20,13 @@ public class AeController {
 		this.ponto_inicial = floresta.ObterInicio();
 		this.ponto_final = floresta.ObterFim();
 		this.clareiras_esperadas = this.floresta.ObterQuantidadeClareiras();
+		this.encontros = new Encontros();
+	
 		this.Inicializar();
 	}
 	
 	private void Inicializar(){
-		this.encontros = new Encontros();
-		this.encontros.CalcularEncontros(this.clareiras_esperadas);
+		this.encontros.CalcularEncontros( this.clareiras_esperadas );
 		this.a_estrela = new A_estrela(this.clareiras_esperadas, this.ponto_inicial, this.ponto_final, this.floresta, this.encontros);
 	}
 	
@@ -52,6 +53,12 @@ public class AeController {
 	}
 	
 	public EstadoDeParada DarPasso(int n_passos , boolean paraSeChegouAoFinal ){
+		if( this.ultimoEstado == EstadoDeParada.CHEGOU_PODEMELHORAR ) {
+			this.RodarNovamente();
+		} else if ( this.ultimoEstado == EstadoDeParada.CHEGOU_MELHORCASO ) {
+			return this.ultimoEstado;
+		}
+		
 		for (int i = 0; i < n_passos; i++) {
 			this.ultimoEstado = this.a_estrela.DarPasso();
 			if( this.ultimoEstado == EstadoDeParada.CHEGOU_MELHORCASO || this.ultimoEstado == EstadoDeParada.CHEGOU_PODEMELHORAR ){
@@ -60,6 +67,8 @@ public class AeController {
 				} else {
 					if( this.ultimoEstado == EstadoDeParada.CHEGOU_PODEMELHORAR ) {
 						this.RodarNovamente();
+					} else {
+						return this.ultimoEstado;
 					}
 				}
 			}
@@ -105,4 +114,12 @@ public class AeController {
 		return this.a_estrela.ObterCustoCaminho();
 	}	
 
+	public int ObterEncontrosEsperados() {
+		return a_estrela.ObterEncontrosEsperados();
+	}	
+	
+	public void ImprimirEncontros( boolean detalhado , String prefixo ) {
+		this.encontros.ImprimirEncontros( detalhado , prefixo );
+	}
+	
 }

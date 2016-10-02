@@ -210,6 +210,10 @@ public class Encontros {
 	public void CalcularEncontros( int qtd , int algoritmo ) {
 		this.encontrosCalculados = qtd;
 		
+		for( Encontro enc : this.encontros ) {
+			enc.doces.clear();
+		}
+		
 		switch( algoritmo ) {
 			case 1:
 				this.AlgoritmoGuloso1( qtd );

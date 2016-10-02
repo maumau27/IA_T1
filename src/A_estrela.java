@@ -166,4 +166,8 @@ public class A_estrela{
 	public double ObterCustoCaminho( ) {
 		return ( this.ObterCustoTotal() - this.ObterCustoEncontros() );
 	}
+	
+	public int ObterEncontrosEsperados() {
+		return this.clareiras_esperadas;
+	}
 }
