@@ -80,8 +80,6 @@ public class A_estrela{
 			
 			this.ccelulas_planejadas.add(new Corrente_Celula(celula, this.ccelula_atual, Heuristica(celula), this.encontros));//adiciona na lista de celulas planejadas
 		}
-
-		//this.ccelulas_planejadas.sort(Corrente_Celula.Comparar_Custo);//organiza a lista de celula planejadas, para a melhor celula ficar na frente
 	}
 	
 	private void DesIterar(){
