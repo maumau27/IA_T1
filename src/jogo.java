@@ -16,7 +16,7 @@ public class jogo {
 		
 		//enc.ImprimirEncontros();
 		
-		a.DarPasso(1000);
+		a.DarPasso();
 		//a.VoltarPasso();
 		
 		System.out.println("Celula atual : (" + a.ObterCelulaAtual().ObterCelula().x + "," + a.ObterCelulaAtual().ObterCelula().y + ")" );

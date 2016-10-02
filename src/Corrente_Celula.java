@@ -16,9 +16,9 @@ public class Corrente_Celula{
 		if(celula_atual.custo < 0)
 			this.clareiras_passadas++;
 		if(celula_atual.custo != -1)
-			this.custo_acumulado = celula_pai.custo_acumulado + celula_atual.custo;
+			this.custo_acumulado = celula_pai.ObterCustoAcumulado() + celula_atual.custo;
 		else
-			this.custo_acumulado = celula_pai.custo_acumulado + encontro.ObterCustoEncontro(this.clareiras_passadas);
+			this.custo_acumulado = celula_pai.ObterCustoAcumulado() + encontro.ObterCustoEncontro(this.clareiras_passadas);
 		this.custo_total = this.custo_acumulado + heuristica;
 	}
 	

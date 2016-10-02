@@ -62,10 +62,10 @@ public class Mapa {
 	        		celulas.get(y).add( new Celula(x,y,4,-1) );
 	        		this.clareiras++;
 	        	} else if ( chr == 'I') {
-	        		celulas.get(y).add( new Celula(x,y,5,0) );
+	        		celulas.get(y).add( new Celula(x,y,5,1) );
 	        		inicio = new Celula(x,y,5,0);
 	        	} else if ( chr == 'F') {
-	        		celulas.get(y).add( new Celula(x,y,6,0) );
+	        		celulas.get(y).add( new Celula(x,y,6,1) );
 	        		fim = new Celula(x,y,5,0);
 	        	} else {
 	        		// Todo: Throw

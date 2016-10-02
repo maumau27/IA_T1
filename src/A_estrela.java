@@ -38,7 +38,7 @@ public class A_estrela{
 			this.ccelula_atual.ObterPai().DesTornarFolha();//faz com que o pai da celula atual pare de ser folha
 
 		ArrayList<Celula> celulas_vizinhas = this.floresta.ObterVizinhos(this.ccelula_atual.ObterCelula());//pega as casas vizinhas
-		
+
 		for (Celula celula : celulas_vizinhas) {//para cada casa vizinha
 			this.ccelulas_planejadas.add(new Corrente_Celula(celula, this.ccelula_atual, Heuristica(celula), this.encontros));//adiciona na lista de celulas planejadas
 		}
