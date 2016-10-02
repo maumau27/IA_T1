@@ -42,21 +42,27 @@ public class AeController {
 		
 	}
 	
-	public void DarPasso(){
-		int fim = this.a_estrela.DarPasso();
-		if(fim == 1){
-			this.RodarNovamente();
-		}
+	public boolean DarPasso(){
+		return DarPasso(0);
 	}
 	
-	public void DarPasso(int n_passos){
+	public boolean DarPasso(int n_passos){
+		return DarPasso( n_passos , false );
+	}
+	
+	public boolean DarPasso(int n_passos , boolean paraSeChegouAoFinal ){
 		for (int i = 0; i < n_passos; i++) {
 			int fim = this.a_estrela.DarPasso();
 			if(fim == 1){
-				this.RodarNovamente();
+				if( paraSeChegouAoFinal == true ) {
+					return true;
+				} else {
+					this.RodarNovamente();
+				}
 			}
 		}
-	}
+		return false;
+	}	
 	
 	public void VoltarPasso(){
 		this.a_estrela.VoltarPasso();
