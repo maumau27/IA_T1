@@ -13,6 +13,7 @@ public class AeController {
 	private Celula ponto_inicial;
 	private Celula ponto_final;
 	private Mapa floresta;
+	private EstadoDeParada ultimoEstado;
 	
 	public AeController(Mapa floresta){
 		this.floresta = floresta;
@@ -42,26 +43,28 @@ public class AeController {
 		
 	}
 	
-	public boolean DarPasso(){
+	public EstadoDeParada DarPasso(){
 		return DarPasso(0);
 	}
 	
-	public boolean DarPasso(int n_passos){
+	public EstadoDeParada DarPasso(int n_passos){
 		return DarPasso( n_passos , false );
 	}
 	
-	public boolean DarPasso(int n_passos , boolean paraSeChegouAoFinal ){
+	public EstadoDeParada DarPasso(int n_passos , boolean paraSeChegouAoFinal ){
 		for (int i = 0; i < n_passos; i++) {
-			int fim = this.a_estrela.DarPasso();
-			if(fim == 1){
+			this.ultimoEstado = this.a_estrela.DarPasso();
+			if( this.ultimoEstado == EstadoDeParada.CHEGOU_MELHORCASO || this.ultimoEstado == EstadoDeParada.CHEGOU_PODEMELHORAR ){
 				if( paraSeChegouAoFinal == true ) {
-					return true;
+					return this.ultimoEstado;
 				} else {
-					this.RodarNovamente();
+					if( this.ultimoEstado == EstadoDeParada.CHEGOU_PODEMELHORAR ) {
+						this.RodarNovamente();
+					}
 				}
 			}
 		}
-		return false;
+		return EstadoDeParada.NAOCHEGOU;
 	}	
 	
 	public void VoltarPasso(){
@@ -85,5 +88,21 @@ public class AeController {
 	public ArrayList<Corrente_Celula> ObterCaminhoPlanejado(){
 		return this.a_estrela.ObterCaminhoPlanejado();
 	}
+	
+	public EstadoDeParada ObterUltimoEstado() {
+		return this.ultimoEstado;
+	}
+	
+	public double ObterCustoTotal( ) {
+		return this.a_estrela.ObterCustoTotal();
+	}
+	
+	public double ObterCustoEncontros( ) {
+		return this.a_estrela.ObterCustoEncontros();
+	}
+	
+	public double ObterCustoCaminho( ) {
+		return this.a_estrela.ObterCustoCaminho();
+	}	
 
 }

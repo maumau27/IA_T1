@@ -6,6 +6,7 @@ import java.io.*;
 import java.nio.file.Paths;
 import java.util.*;
 
+
 public class A_estrela{
 
 	private int clareiras_esperadas;
@@ -100,17 +101,18 @@ public class A_estrela{
 		this.ccelulas_planejadas.sort(Corrente_Celula.Comparar_Custo);//organiza a lista de celula planejadas, para a melhor celula ficar na frente
 	}
 	
-	public int DarPasso(){
-		if(this.ccelula_atual == null){
-			this.Iterar();
-			return 0;
-		}
-		else if(this.ccelula_atual.ObterCelula().x == this.ponto_final.x && this.ccelula_atual.ObterCelula().y == ponto_final.y){
-			return 1;
+	public EstadoDeParada DarPasso(){
+		this.Iterar();
+		
+		if(this.ccelula_atual.ObterCelula().x == this.ponto_final.x && this.ccelula_atual.ObterCelula().y == ponto_final.y){
+			if( this.ccelula_atual.ObterClareirasPassadas() < this.clareiras_esperadas ) {
+				return EstadoDeParada.CHEGOU_PODEMELHORAR;
+			} else {
+				return EstadoDeParada.CHEGOU_MELHORCASO;
+			}
 		}
 		else{
-			this.Iterar();
-			return 0;
+			return EstadoDeParada.NAOCHEGOU;
 		}
 	}
 	
@@ -145,5 +147,23 @@ public class A_estrela{
 	
 	public double Heuristica(Celula casa_inicial) {
 		return Math.abs(casa_inicial.x - this.ponto_final.x) + Math.abs(casa_inicial.y - this.ponto_final.y);
+	}
+	
+	public double ObterCustoTotal( ) {
+		return this.ObterCelulaAtual().ObterCustoAcumulado();
+	}
+	
+	public double ObterCustoEncontros( ) {
+		double custoAcc = 0;
+		
+		for( int i = 0 ; i < this.ObterCelulaAtual().ObterClareirasPassadas() ; i++ ) {
+			custoAcc += this.encontros.ObterCustoEncontro(i+1);
+		}
+		
+		return custoAcc;
+	}
+	
+	public double ObterCustoCaminho( ) {
+		return ( this.ObterCustoTotal() - this.ObterCustoEncontros() );
 	}
 }
