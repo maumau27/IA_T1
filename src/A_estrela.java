@@ -1,4 +1,5 @@
 import java.awt.datatransfer.FlavorTable;
+import java.awt.geom.NoninvertibleTransformException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -56,21 +57,26 @@ public class A_estrela{
 
 		for (Celula celula : celulas_vizinhas) {//para cada casa vizinha
 			int addFlag = 1;
-
+			
 			// Checa se a celula vizinha ja esta cadastrada na lista dos passados ( caminho ) 
 			for( Corrente_Celula cor : ccaminho ) {
 				if( cor.ObterCelula().x == celula.x && cor.ObterCelula().y == celula.y ) {
 					addFlag = 0;
-					break;
+					//break;
 				}
 			}
 			if( addFlag == 0 ) {
 				continue;
 			}			
 			
+			Corrente_Celula nova_celula = new Corrente_Celula(celula, this.ccelula_atual, Heuristica(celula), this.encontros);
 			// Checa se a celula vizinha ja esta cadastrada na propria lista de celulas planejadas
 			for( Corrente_Celula cor : ccelulas_planejadas ) {
 				if( cor.ObterCelula().x == celula.x && cor.ObterCelula().y == celula.y ) {
+					if(nova_celula.ObterCustoTotal() < cor.ObterCustoTotal()){
+						this.ccelulas_planejadas.remove(cor);
+						this.ccelulas_planejadas.add(nova_celula);
+					}
 					addFlag = 0;
 					break;
 				}
@@ -79,7 +85,7 @@ public class A_estrela{
 				continue;
 			}
 			
-			this.ccelulas_planejadas.add(new Corrente_Celula(celula, this.ccelula_atual, Heuristica(celula), this.encontros));//adiciona na lista de celulas planejadas
+			this.ccelulas_planejadas.add(nova_celula);//adiciona na lista de celulas planejadas
 		}
 	}
 	
