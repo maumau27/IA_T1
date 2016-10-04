@@ -103,7 +103,7 @@ public class InterfaceGrafica extends JPanel{
 			}
 		} else{
 
-			System.out.println("oi");
+			//System.out.println("oi");
 			tempo = 50;
 			ativaPrintLinhas();
 			h++;
@@ -162,8 +162,8 @@ public class InterfaceGrafica extends JPanel{
 						localAtualy = 23*j;
 						localDesejadox = localAtualx;
 						localDesejadoy = localAtualy;
-						System.out.println("x: "+i+" y: "+j);
-						System.out.println("x inicio: " + mapa.ObterInicio().x + " y inicio: " + mapa.ObterInicio().y);
+						//System.out.println("x: "+i+" y: "+j);
+						//System.out.println("x inicio: " + mapa.ObterInicio().x + " y inicio: " + mapa.ObterInicio().y);
 						inicio = false;
 					}
 					

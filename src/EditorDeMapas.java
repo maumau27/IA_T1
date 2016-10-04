@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
 
@@ -196,6 +197,10 @@ class JanelaPrincipal extends JFrame {
 	public Container mainPane;
 	public Container mapPane;
 	
+	public static JButton btnRunCont;
+	public static JTextArea labelRelatorio;
+	public static JSlider sliderSpeed;
+	
 	static public ImageIcon iconD;
 	static public ImageIcon iconP;
 	static public ImageIcon iconG;
@@ -216,7 +221,7 @@ class JanelaPrincipal extends JFrame {
 	
 	
 	public JanelaPrincipal( Mapa map , int sx , int sy , int gx , int gy ) {
-        setTitle("Editor de Mapas");
+        setTitle("Chapeuzinho Vermelho");
         setSize(sx, sy);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -260,6 +265,7 @@ class JanelaPrincipal extends JFrame {
         // Populando parte de opcoes	  
         Font font1 = new Font( "Arial" , Font.BOLD , 20);
         Font font2 = new Font( "Arial" , Font.BOLD , 18);
+        Font font3 = new Font( "Arial" , Font.BOLD , 14);
         
 	        JLabel tileAlgoModeTitle = new JLabel("Executar" , SwingConstants.CENTER);
 	        tileAlgoModeTitle.setFont(font1);
@@ -333,6 +339,36 @@ class JanelaPrincipal extends JFrame {
 	        optPane.add( selector6.label );
 	        group.add( selector6 );
 	        
+	        JLabel separator = new JLabel("" , SwingConstants.CENTER);
+	        separator.setFont(font1);
+	        separator.setForeground( new Color( 255 ,255 ,255 ));
+	        separator.setPreferredSize( new Dimension(190,20 ));
+	        optPane.add( separator );
+	        
+	    sliderSpeed = new JSlider(JSlider.HORIZONTAL, 1 , 100 , 10 );
+	    sliderSpeed.setPreferredSize( new Dimension( 190 , 40) );
+        optPane.add( sliderSpeed );
+        
+        // Continuar iteracao
+        btnRunCont = new JButton("Proxima It");
+        btnRunCont.setFont(font2);
+        btnRunCont.setPreferredSize( new Dimension( 190 , 40) );
+        btnRunCont.addActionListener(new ActionListener() { 
+            public void actionPerformed(ActionEvent e) { 
+            	EditorDeMapas.runTech_cont();
+            } 
+        });
+        btnRunCont.setVisible(false);
+        optPane.add( btnRunCont );
+	        
+        // Relatorio
+        EditorDeMapas.janelaPrincipal.labelRelatorio = new JTextArea("Relatorio" );
+        labelRelatorio.setFont(font3);
+        labelRelatorio.setForeground( new Color( 255 ,255 ,255 ));
+        labelRelatorio.setPreferredSize( new Dimension(190,500 ));
+        labelRelatorio.setOpaque(false);
+        optPane.add( labelRelatorio );
+	        
         // Popula o mapa
         tiles = new ArrayList<Tile>();
         for( int y = 0 ; y < gx-1 ; y++ ) {
@@ -376,6 +412,9 @@ public class EditorDeMapas {
 	public static int mapOffsetY;
 	
 	public static JanelaPrincipal janelaPrincipal;
+	
+	public static Timer timer;
+	public static int animState;
 	
 	
 	static void iniciar(Mapa mp) {
@@ -450,10 +489,74 @@ public class EditorDeMapas {
 	public static void runTech() {
 		EditorDeMapas.salvar();
 		jogo.iniciaAlgoritmo();
-		jogo.rodaAlgoritmo();
-		EditorDeMapas.pintarCaminho();
+		
+		//jogo.rodaAlgoritmo();
+		/*
+		while( jogo.a.ObterUltimoEstado() != EstadoDeParada.CHEGOU_MELHORCASO ) {
+			jogo.rodaPassoAlgoritmo(1);
+			try {
+				TimeUnit.MILLISECONDS.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			EditorDeMapas.pintarCaminho();
+		}
+		*/
+		
+        EditorDeMapas.runTech_timer();
+	}
+
+	public static void runTech_timer() {
+		ActionListener animate = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				EditorDeMapas.runTech_rec();	
+			}
+        };	
+        EditorDeMapas.timer = new Timer( 100 , animate );
+        EditorDeMapas.timer.start();	
+	}	
+	
+	public static void runTech_rec() {
+		if( jogo.a.ObterUltimoEstado() == EstadoDeParada.NAOCHEGOU ) {
+			EditorDeMapas.animState = 0;
+		}
+		
+		if( jogo.a.ObterUltimoEstado() != EstadoDeParada.NAOCHEGOU ) {
+			EditorDeMapas.janelaPrincipal.labelRelatorio.setText("aaa");
+			EditorDeMapas.janelaPrincipal.labelRelatorio.setText( jogo.obterStringEstado() );
+		}
+		
+		if( jogo.a.ObterUltimoEstado() == EstadoDeParada.CHEGOU_MELHORCASO && EditorDeMapas.animState == 0 ) {
+			EditorDeMapas.animState = 1;
+			EditorDeMapas.janelaPrincipal.btnRunCont.setVisible(false);
+			return;
+		}
+
+		if( jogo.a.ObterUltimoEstado() == EstadoDeParada.CHEGOU_PODEMELHORAR && EditorDeMapas.animState == 0 ) {
+			EditorDeMapas.animState = 1;
+			EditorDeMapas.janelaPrincipal.btnRunCont.setVisible(true);
+			return;
+		}	
+		
+		if( EditorDeMapas.animState == 0  || EditorDeMapas.animState == 3 ) {	
+			int steps = EditorDeMapas.janelaPrincipal.sliderSpeed.getValue();
+			if( steps > 95 ) {
+				steps = 100000;
+			}
+			
+			jogo.rodaPassoAlgoritmo(steps);
+			EditorDeMapas.pintarCaminho();
+		}
 	}
 	
+
+	public static void runTech_cont() {
+		EditorDeMapas.animState = 3;
+		EditorDeMapas.runTech_timer();
+	}
 
 	public static void runAnimated() {
     	EditorDeMapas.salvar();

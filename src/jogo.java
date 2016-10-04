@@ -6,6 +6,8 @@ public class jogo {
 	public static Mapa map; 
 	public static Encontros enc;
 	public static AeController a;
+	
+	public static String relatorio;
 
 	static Corrente_Celula corrente_celula;
 	static ArrayList<Ponto> lst = new ArrayList<>();
@@ -50,13 +52,6 @@ public class jogo {
 	}
 	
 	public static void rodaAlgoritmo() {
-		// Da um quantidade definida de passos
-		for( int i = 0 ; i < 50 ; i ++ ) {
-			a.DarPasso( 1 , true );
-			//a.VoltarPasso();
-			//System.out.println("Celula atual : (" + a.ObterCelulaAtual().ObterCelula().x + "," + a.ObterCelulaAtual().ObterCelula().y + ")" );
-		}
-		
 		// Roda ate o final
 		while( a.ObterUltimoEstado() != EstadoDeParada.CHEGOU_MELHORCASO ) {
 			a.DarPasso( 1 , true );
@@ -66,7 +61,7 @@ public class jogo {
 				//System.out.println("Celula atual : (" + a.ObterCelulaAtual().ObterCelula().x + "," + a.ObterCelulaAtual().ObterCelula().y + ")" );
 			}
 			
-			// Verifica custo total
+			// Imprime custos
 			System.out.println("\nRELATORIO\n");
 			System.out.println("\tCusto Total:\t\t" + a.ObterCustoTotal() );
 			System.out.println("\tEncontros:\t\t" + a.ObterCelulaAtual().ObterClareirasPassadas() + " / " + a.ObterEncontrosEsperados() );
@@ -75,6 +70,31 @@ public class jogo {
 			a.ImprimirEncontros(false , "\t");
 			System.out.print("\n");
 		}
+	}
+	
+	public static EstadoDeParada rodaPassoAlgoritmo( int p ) {
+		if( a.ObterUltimoEstado() == EstadoDeParada.CHEGOU_MELHORCASO ) {
+			System.out.println("MELHOR CASO");
+			return a.ObterUltimoEstado();
+		}
+		
+		a.DarPasso( p , true );
+		return a.ObterUltimoEstado();
+	}
+	
+	public static String obterStringEstado() {
+		String estado = "";
+		estado += "Encontros: " + a.ObterCelulaAtual().ObterClareirasPassadas() + " / " + a.ObterEncontrosEsperados() + "\n" ;		
+		estado += "Custos: \n";
+		estado += "Total: " + String.format("%.3f", a.ObterCustoTotal()) +"\n";
+		estado += "Caminho: " + String.format("%.3f", a.ObterCustoCaminho() ) +"\n";
+		estado += "Encontros: " + String.format("%.3f", a.ObterCustoEncontros() ) +"\n";
+		
+		estado += "\n";
+		
+		estado += jogo.enc.ObterRelatorio(false);
+		
+		return estado;
 	}
 	
 	public static void imprimirEncontros() {

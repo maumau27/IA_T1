@@ -602,5 +602,51 @@ public class Encontros {
 			System.out.println("\n\n");
 		}
 	}
+	
+	public String ObterRelatorio( boolean detalhado  ) {
+		int count = 0;
+		double custoTotal = 0;
+		double custoTotalOriginal = 0;
+		double custoTemp = 0;
+		
+		String relatorio = "";
+		
+		if( detalhado == true ) {
+			relatorio += "Encontros :\n";
+		}
+			
+		Encontro enc;
+		
+		for( int i = 0 ; i < encontrosCalculados ; i++ )  {
+			enc = this.encontros.get(i);
+		
+			custoTemp = enc.calcularCustoEncontro(null);
+			custoTotal += custoTemp;
+			custoTotalOriginal += enc.custoOriginal;
+			
+			if( detalhado == true ) {
+				relatorio += "\n" + "Encontro: " + count + "\tCusto: " + custoTemp + " / " + enc.custoOriginal + "\n" + "Doces:\t";
+				for( Doce doc : enc.doces ) {	
+					System.out.printf( "%d(%.1f) | " , doc.tipo , doc.fator );
+				}
+			}
+			else {
+				relatorio += "\n" + "Encontro: " + (i+1) + " : ";
+				relatorio += String.format( "%.3f", enc.calcularCustoEncontro(null) );
+				relatorio += "\n";
+				for( Doce doc : enc.doces ) {	
+					relatorio += String.format( " %.1f ", doc.fator );
+					//System.out.printf( "%d(%.1f) ; " , doc.tipo + 1 , doc.fator );
+				}
+			}
+			count++;
+		}
+		
+		if( detalhado == true ) {
+			relatorio += "\nCusto Total: " + custoTotal + " / " + custoTotalOriginal + "\n\n";
+		}
+
+		return relatorio;
+	}
 }
 	

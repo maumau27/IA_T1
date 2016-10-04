@@ -21,12 +21,13 @@ public class AeController {
 		System.out.println("(" + ponto_inicial.x + "," + ponto_inicial.y + ")");
 		this.ponto_final = floresta.ObterFim();
 		this.clareiras_esperadas = this.floresta.ObterQuantidadeClareiras();
-		this.encontros = new Encontros();
+		this.encontros = jogo.enc;
 	
 		this.Inicializar();
 	}
 	
 	private void Inicializar(){
+		this.ultimoEstado = EstadoDeParada.NAOCHEGOU;
 		this.encontros.CalcularEncontros( this.clareiras_esperadas );
 		this.a_estrela = new A_estrela(this.clareiras_esperadas, this.ponto_inicial, this.ponto_final, this.floresta, this.encontros);
 	}
