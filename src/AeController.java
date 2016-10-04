@@ -18,6 +18,7 @@ public class AeController {
 	public AeController(Mapa floresta){
 		this.floresta = floresta;
 		this.ponto_inicial = floresta.ObterInicio();
+		System.out.println("(" + ponto_inicial.x + "," + ponto_inicial.y + ")");
 		this.ponto_final = floresta.ObterFim();
 		this.clareiras_esperadas = this.floresta.ObterQuantidadeClareiras();
 		this.encontros = new Encontros();

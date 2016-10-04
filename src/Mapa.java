@@ -89,6 +89,7 @@ public class Mapa {
 	        for ( x = 0; x < line.length(); x++) {
 	        	chr = line.charAt(x);
 
+<<<<<<< HEAD
 	        	Celula cel = new Celula(x,y, this.obterIDTerreno(chr) , this.obterCustoTerreno(chr) );
 	        	celulas.get(y).add( new Celula(x,y, this.obterIDTerreno(chr) , this.obterCustoTerreno(chr) ) );
 	        	switch(chr) {
@@ -105,6 +106,27 @@ public class Mapa {
 		        		break;
 	        	}
 
+=======
+	        	
+	        	if ( chr == '.') {
+	        		celulas.get(y).add( new Celula(x,y,1,1) );
+	        	} else if ( chr == 'G') {
+	        		celulas.get(y).add( new Celula(x,y,2,5) );
+	        	} else if ( chr == 'D') {
+	        		celulas.get(y).add( new Celula(x,y,3,200) );
+	        	} else if ( chr == 'C') {
+	        		celulas.get(y).add( new Celula(x,y,4,-1) );
+	        		this.clareiras++;
+	        	} else if ( chr == 'I') {
+	        		celulas.get(y).add( new Celula(x,y,5,1) );
+	        		inicio = new Celula(x,y,5,0);
+	        	} else if ( chr == 'F') {
+	        		celulas.get(y).add( new Celula(x,y,6,1) );
+	        		fim = new Celula(x,y,5,0);
+	        	} else {
+	        		// Todo: Throw
+	        	}	
+>>>>>>> dfcbb7611ef516d58d50281b3b6d5eb4d0721164
 	        	//System.out.print( celulas.get(y).get(x).terreno );
 	        }
 	        dimensoes[0] = x + 1;
