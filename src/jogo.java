@@ -8,7 +8,6 @@ public class jogo {
 	public static AeController a;
 
 	static Corrente_Celula corrente_celula;
-	static Tela tela;;
 	static ArrayList<Ponto> lst = new ArrayList<>();
 	static ArrayList<ArrayList<Ponto>> lst2 = new ArrayList<>();	
 	static ArrayList<ArrayList<Line2D.Double>> arrayLinhas = new ArrayList<>();
@@ -38,7 +37,6 @@ public class jogo {
 	}
 	
 	public static void iniciaAnimacao() {
-		tela = new Tela();
 		corrente_celula = a.ObterCelulaAtual();
 		recursao(corrente_celula);
 		

@@ -193,7 +193,7 @@ class Tile implements MouseListener {
 }
 
 class JanelaPrincipal extends JFrame {
-	private Container mainPane;
+	public Container mainPane;
 	public Container mapPane;
 	
 	static public ImageIcon iconD;
@@ -273,9 +273,7 @@ class JanelaPrincipal extends JFrame {
 	        btnRunText.setPreferredSize( new Dimension( 190 , 40) );
 	        btnRunText.addActionListener(new ActionListener() { 
 	            public void actionPerformed(ActionEvent e) { 
-	            	EditorDeMapas.salvar();
-	        		jogo.iniciaAlgoritmo();
-	        		jogo.rodaAlgoritmo();
+	            	EditorDeMapas.runText();
 	            } 
 	        });
 	        optPane.add( btnRunText );
@@ -286,10 +284,7 @@ class JanelaPrincipal extends JFrame {
 	        btnRunTech.setPreferredSize( new Dimension( 190 , 40) );
 	        btnRunTech.addActionListener(new ActionListener() { 
 	            public void actionPerformed(ActionEvent e) { 
-	            	EditorDeMapas.salvar();
-	        		jogo.iniciaAlgoritmo();
-	        		jogo.rodaAlgoritmo();
-	        		EditorDeMapas.pintarCaminho();
+	            	EditorDeMapas.runTech();
 	            } 
 	        });
 	        optPane.add( btnRunTech );
@@ -300,10 +295,7 @@ class JanelaPrincipal extends JFrame {
 	        btnRunAnimation.setPreferredSize( new Dimension( 190 , 40) );
 	        btnRunAnimation.addActionListener(new ActionListener() { 
 	            public void actionPerformed(ActionEvent e) { 
-	            	EditorDeMapas.salvar();
-	        		jogo.iniciaAlgoritmo();
-	        		jogo.rodaAlgoritmo();
-	        		jogo.iniciaAnimacao();
+	            	EditorDeMapas.runAnimated();
 	            } 
 	        });
 	        optPane.add( btnRunAnimation );
@@ -447,4 +439,38 @@ public class EditorDeMapas {
 		
 	}
 	
+	
+	public static void runText() {
+    	EditorDeMapas.salvar();
+		jogo.iniciaAlgoritmo();
+		jogo.rodaAlgoritmo();
+	}
+	
+	
+	public static void runTech() {
+		EditorDeMapas.salvar();
+		jogo.iniciaAlgoritmo();
+		jogo.rodaAlgoritmo();
+		EditorDeMapas.pintarCaminho();
+	}
+	
+
+	public static void runAnimated() {
+    	EditorDeMapas.salvar();
+		jogo.iniciaAlgoritmo();
+		jogo.rodaAlgoritmo();
+		
+		int mapSx[] = EditorDeMapas.mapa.ObterTamanho();
+		
+		InterfaceGrafica IG = InterfaceGrafica.getInterfaceGrafica();
+		IG.setPreferredSize( new Dimension(100,100));
+		IG.setBounds( 0 , 0 , mapSx[0]*EditorDeMapas.tileSizeX , mapSx[1]*EditorDeMapas.tileSizeY);
+		
+		EditorDeMapas.janelaPrincipal.mapPane.removeAll();
+		EditorDeMapas.janelaPrincipal.mapPane.add(IG);
+		EditorDeMapas.janelaPrincipal.mapPane.repaint();
+		
+		jogo.iniciaAnimacao();
+	}
+
 }

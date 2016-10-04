@@ -21,7 +21,7 @@ public class InterfaceGrafica extends JPanel{
 	private int localAtualx;
 	private int localAtualy;
 	private boolean inicio = true;
-	Mapa mapa = new Mapa();
+	Mapa mapa = jogo.map;
 	private int localDesejadoy;
 	private int localDesejadox;
 	public boolean linhas = false;
@@ -37,7 +37,8 @@ public class InterfaceGrafica extends JPanel{
 			image[0] = ImageIO.read(getClass().getResource("/imagens/caminho.png"));
 			image[1] = ImageIO.read(getClass().getResource("/imagens/Grass_Type2.jpg"));
 			image[2] = ImageIO.read(getClass().getResource("/imagens/arvore.jpg"));
-			image[3] = ImageIO.read(getClass().getResource("/imagens/lobo2.png"));
+			//image[3] = ImageIO.read(getClass().getResource("/imagens/lobo2.png"));
+			image[3] = ImageIO.read(getClass().getResource("/imagens/editor_C.jpg"));
 			image[5] = ImageIO.read(getClass().getResource("/imagens/casaavo.png"));
 			movimento[0] = ImageIO.read(getClass().getResource("/imagens/personagem1.png"));
 			movimento[1] = ImageIO.read(getClass().getResource("/imagens/personagem2.png"));
