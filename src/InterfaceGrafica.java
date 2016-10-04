@@ -1,8 +1,12 @@
+import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -14,10 +18,18 @@ public class InterfaceGrafica extends JPanel{
 	private static InterfaceGrafica inst = null;
 	private BufferedImage image[] = new BufferedImage[6];
 	private BufferedImage movimento[] = new BufferedImage[12];
-	private int i = 0;
 	private int localAtualx;
 	private int localAtualy;
 	private boolean inicio = true;
+	Mapa mapa = new Mapa();
+	private int localDesejadoy;
+	private int localDesejadox;
+	public boolean linhas = false;
+	private int g = 0;
+	private int h = 0;
+	private int tempo = 0;
+	
+	public static ArrayList<ArrayList<Line2D.Double>> lst;
 	
 	private InterfaceGrafica(){
 		
@@ -50,10 +62,11 @@ public class InterfaceGrafica extends JPanel{
 				repaint();				
 			}
         };
-        Timer timer = new Timer(150,animate);
+        Timer timer = new Timer(tempo,animate);
         timer.start();
 		
 	}
+	
 	
 	public static InterfaceGrafica getInterfaceGrafica(){
 		if(inst == null){
@@ -69,10 +82,51 @@ public class InterfaceGrafica extends JPanel{
 		
 		
 		desenhaMatriz();
-		//if(localAtualy)
-		movimentaNorte();
+		
+		if(linhas == false){
+
+			if(localAtualy > localDesejadoy)
+				movimentaNorte();
+			else if(localAtualy < localDesejadoy)
+				movimentaSul();
+			else if (localAtualx < localDesejadox)
+				movimentaLeste();
+			else if (localAtualx > localDesejadox)
+				movimentaOeste();
+			else if(localAtualx == localDesejadox && localAtualy == localDesejadoy)
+				jogo.setaProx();
+			
+			if(jogo.i == -1){
+				jogo.printaLinhas();
+				
+			}
+		} else{
+
+			System.out.println("oi");
+			tempo = 50;
+			ativaPrintLinhas();
+			h++;
+		}
 		
 	}
+	
+	public void ativaPrintLinhas(){
+		if(g >= lst.size())
+			return;
+		ArrayList<Line2D.Double> l = lst.get(g);
+		if(h == l.size()){
+			h = 0;
+			g++;
+			repaint();
+			return;
+		}
+		for (int q = 0; q <= h; q++){
+			Stroke strokeHour = new BasicStroke(4f);
+			g2d.setStroke(strokeHour);
+			g2d.draw(l.get(q));
+		}
+	}
+	
 	
 	private void desenhaMatriz(){
 		
@@ -81,7 +135,7 @@ public class InterfaceGrafica extends JPanel{
 		int valor = 0;
 		int terreno;
 		
-		Mapa mapa = new Mapa();
+		
 		
 		for (i = 0; i < 41; i++){
 			
@@ -105,6 +159,10 @@ public class InterfaceGrafica extends JPanel{
 					if (inicio){
 						localAtualx = 23*i;
 						localAtualy = 23*j;
+						localDesejadox = localAtualx;
+						localDesejadoy = localAtualy;
+						System.out.println("x: "+i+" y: "+j);
+						System.out.println("x inicio: " + mapa.ObterInicio().x + " y inicio: " + mapa.ObterInicio().y);
 						inicio = false;
 					}
 					
@@ -115,24 +173,32 @@ public class InterfaceGrafica extends JPanel{
 		
 	}
 	
+	public void vertical(int valor){
+		localDesejadoy += valor*23;
+	}
+	
+	public void horizontal(int valor){
+		localDesejadox += valor*23;
+	}
+	
 	private void movimentaSul(){
 		g2d.drawImage(movimento[(localAtualy%3)], localAtualx, localAtualy, 23, 23, null);
-		localAtualy+=4;
+		localAtualy+=1;
 	}
 	
 	private void movimentaNorte(){
 		g2d.drawImage(movimento[6 + (localAtualy%3)], localAtualx, localAtualy, 23, 23, null);
-		localAtualy-=4;
+		localAtualy-=1;
 	}
 	
 	private void movimentaLeste(){
 		g2d.drawImage(movimento[9 + (localAtualx%3)], localAtualx, localAtualy, 23, 23, null);
-		localAtualx+=4;
+		localAtualx+=1;
 	}
 	
 	private void movimentaOeste(){
 		g2d.drawImage(movimento[3 + (localAtualx%3)], localAtualx, localAtualy, 23, 23, null);
-		localAtualx-=4;
+		localAtualx-=1;
 	}
 	
 	
