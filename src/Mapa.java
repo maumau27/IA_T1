@@ -4,12 +4,21 @@ import java.util.*;
 
 
 public class Mapa {
+	class terrenoIndex {
+		public char letra;
+		public int id;
+		public double custo;
+	}
+	
 	private ArrayList<ArrayList<Celula>> celulas = new ArrayList<ArrayList<Celula>>(); 
 	private Celula inicio = null;
 	private Celula fim = null;
 	private int[] dimensoes = new int[2];
 	private int clareiras;
 	
+	private ArrayList<terrenoIndex> terrenos = new ArrayList<terrenoIndex>();
+	
+
 	
 	public Mapa(String arquivo) {
 		 CarregarArquivo(arquivo);
@@ -22,6 +31,35 @@ public class Mapa {
 	public void CarregarArquivo(String arquivo) {
 	    Scanner file;
 	    file = null;
+
+	    // Le terrenos
+	    try {
+	        file = new Scanner(Paths.get("terrenos.txt"));
+	    } catch (FileNotFoundException ex) {
+	    	System.out.println("Arquivo "+"terrenos.txt"+" Nao Encontrado!");
+	        //Logger.getLogger(Skills.class.getName()).log(Level.SEVERE, null, ex);
+	    } catch (IOException e) {
+	    	System.out.println("Abertura de "+"terrenos.txt"+" falhou!");
+			e.printStackTrace();
+		}	    
+
+	    // Limpando ambiente
+	    this.terrenos.clear();
+	    
+	    // Criando lista de tipso de terreno
+	    String elementos[];
+	    int id = 0;
+	    while( file.hasNext() ) {
+	    	elementos = file.nextLine().split(" ");
+	    	terrenoIndex ti = new terrenoIndex();
+	    	ti.custo = Double.parseDouble(elementos[1]);
+	    	ti.id = id;
+	    	ti.letra = elementos[0].charAt(0);
+	    	this.terrenos.add( ti );
+	    	id++;
+	    }
+	    
+	    // Le arquivo de mapa
 	    
 	    try {
 	        file = new Scanner(Paths.get(arquivo));
@@ -51,25 +89,22 @@ public class Mapa {
 	        for ( x = 0; x < line.length(); x++) {
 	        	chr = line.charAt(x);
 
-	        	
-	        	if ( chr == '.') {
-	        		celulas.get(y).add( new Celula(x,y,1,1) );
-	        	} else if ( chr == 'G') {
-	        		celulas.get(y).add( new Celula(x,y,2,5) );
-	        	} else if ( chr == 'D') {
-	        		celulas.get(y).add( new Celula(x,y,3,200) );
-	        	} else if ( chr == 'C') {
-	        		celulas.get(y).add( new Celula(x,y,4,-1) );
-	        		this.clareiras++;
-	        	} else if ( chr == 'I') {
-	        		celulas.get(y).add( new Celula(x,y,5,0) );
-	        		inicio = new Celula(x,y,5,0);
-	        	} else if ( chr == 'F') {
-	        		celulas.get(y).add( new Celula(x,y,6,0) );
-	        		fim = new Celula(x,y,5,0);
-	        	} else {
-	        		// Todo: Throw
-	        	}	
+	        	Celula cel = new Celula(x,y, this.obterIDTerreno(chr) , this.obterCustoTerreno(chr) );
+	        	celulas.get(y).add( new Celula(x,y, this.obterIDTerreno(chr) , this.obterCustoTerreno(chr) ) );
+	        	switch(chr) {
+		        	case 'C':
+		        		this.clareiras++;
+		        		break;
+		        		
+		        	case 'I':
+		        		this.inicio = cel;
+		        		break;
+		        		
+		        	case 'F':
+		        		this.fim = cel;
+		        		break;
+	        	}
+
 	        	//System.out.print( celulas.get(y).get(x).terreno );
 	        }
 	        dimensoes[0] = x + 1;
@@ -96,8 +131,8 @@ public class Mapa {
 	}	
 	
 	public Celula ObterCelula( int x , int y ) {
-		if( this.PertenceAoMapa( x , y ) ) {
-			return  new Celula( x ,y, ObterTerreno(x, y), ObterTempo(x, y) );
+		if( this.PertenceAoMapa( x , y ) ){
+			return celulas.get(y).get(x);
 		} else {
 			return null;
 		}
@@ -161,4 +196,32 @@ public class Mapa {
 		
 		return vizinhos;
 	}
+	
+	public double obterCustoTerreno( char terreno ) {
+		for( terrenoIndex ti : this.terrenos ) {
+			if( ti.letra == terreno ) {
+				return ti.custo;
+			}
+		}
+		return 1;
+	}
+	
+	public double obterCustoTerreno( int id ) {
+		for( terrenoIndex ti : this.terrenos ) {
+			if( ti.id == id ) {
+				return ti.custo;
+			}
+		}
+		return 1;
+	}	
+	
+	public int obterIDTerreno( char terreno ) {
+		for( terrenoIndex ti : this.terrenos ) {
+			if( ti.letra == terreno ) {
+				return ti.id;
+			}
+		}
+		return 1;
+	}
+	
 }

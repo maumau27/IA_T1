@@ -12,6 +12,10 @@ public class Celula {
 		this.custo = custo;
 	}
 	
+	public Celula(int x , int y , int terreno , double custo) {
+		this( x , y , terreno , (float)custo );
+	}	
+	
 	public Celula( int x , int y ) {
 		this(x, y, 1, 0);
 	}

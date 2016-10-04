@@ -1,18 +1,35 @@
 import java.util.ArrayList;
 
 public class jogo {
+	
+	public static Mapa map; 
+	public static Encontros enc;
+	public static AeController a;
 
 	public static void main(String[] args) {
 		System.out.println( "DEBUG: START" );
 		
+		jogo.incializacao();
+		jogo.editorDeMapas();
+		//jogo.iniciaAlgoritmo();
+		//jogo.rodaAlgoritmo();
+	}
+
+	public static void incializacao() {
 		// TODO Auto-generated method stub
-		Mapa map = new Mapa();
-		Encontros enc = new Encontros();
-		AeController a = new AeController(map);
-		
-		enc.CalcularEncontros(10);
-		enc.ImprimirEncontros(true);
-		
+		map = new Mapa();
+	}
+
+	public static void editorDeMapas() {
+		EditorDeMapas.iniciar(map);
+	}
+	
+	public static void iniciaAlgoritmo() {
+		enc = new Encontros();
+		a = new AeController(map);
+	}
+	
+	public static void rodaAlgoritmo() {
 		// Da um quantidade definida de passos
 		for( int i = 0 ; i < 50 ; i ++ ) {
 			a.DarPasso( 1 , true );
@@ -38,5 +55,9 @@ public class jogo {
 			a.ImprimirEncontros(false , "\t");
 			System.out.print("\n");
 		}
+	}
+	
+	public static void imprimirEncontros() {
+		enc.ImprimirEncontros(true);
 	}
 }
